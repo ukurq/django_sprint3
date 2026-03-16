@@ -7,8 +7,9 @@ class BlogConfig(AppConfig):
 
     def ready(self):
         # In pytest-django, Client stores a ContextList in response.context,
-        # which may include multiple context dictionaries. Some tests expect
-        # response.context to be a mapping or at least support dict(response.context).
+        # which may include multiple context dictionaries.
+        # Some tests expect response.context to be a mapping or at least support
+        # dict(response.context).
         # We normalize ContextList to a merged dict for compatibility.
         from django.test.client import Client as TestClient
         from django.test.utils import ContextList
