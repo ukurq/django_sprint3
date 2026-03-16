@@ -38,4 +38,3 @@ class BlogConfig(AppConfig):
                 return response
 
             return response
-

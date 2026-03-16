@@ -35,7 +35,11 @@ def post_detail(request, id):
 
 def category_posts(request, category_slug):
     """Страница с постами по категориям."""
-    category = get_object_or_404(Category, slug=category_slug, is_published=True)
+    category = get_object_or_404(
+        Category,
+        slug=category_slug,
+        is_published=True,
+    )
     post_list = Post.objects.filter(
         category=category,
         is_published=True,
