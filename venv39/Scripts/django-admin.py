@@ -1,4 +1,4 @@
-#!C:\Users\ukur\Desktop\Yandex_Practicum V2\django_sprint3\venv39\Scripts\python.exe
+#!/usr/bin/env python
 # When the django-admin.py deprecation ends, remove this script.
 import warnings
 
@@ -9,8 +9,8 @@ try:
 except ImportError:
     raise ImportError(
         'django-admin.py was deprecated in Django 3.1 and removed in Django '
-        '4.0. Please manually remove this script from your virtual environment '
-        'and use django-admin instead.'
+        '4.0. Please manually remove this script from your virtual '
+        'environment and use django-admin instead.'
     )
 
 if __name__ == "__main__":
