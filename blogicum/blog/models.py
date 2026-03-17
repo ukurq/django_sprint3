@@ -1,22 +1,39 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 User = get_user_model()
 
 
-class Location(models.Model):
-    name = models.CharField(
-        max_length=256,
-        verbose_name='Название места'
-    )
+class PublishedManager(models.Manager):
+    def published(self):
+        now = timezone.now()
+        return self.get_queryset().filter(
+            is_published=True,
+            pub_date__lte=now,
+            category__is_published=True,
+        )
+
+
+class TimeStampedPublishable(models.Model):
     is_published = models.BooleanField(
         default=True,
         verbose_name='Опубликовано',
-        help_text='Снимите галочку, чтобы скрыть публикацию.'
+        help_text='Снимите галочку, чтобы скрыть публикацию.',
     )
     created_at = models.DateTimeField(
         auto_now_add=True,
-        verbose_name='Добавлено'
+        verbose_name='Добавлено',
+    )
+
+    class Meta:
+        abstract = True
+
+
+class Location(TimeStampedPublishable):
+    name = models.CharField(
+        max_length=256,
+        verbose_name='Название места',
     )
 
     class Meta:
@@ -27,10 +44,10 @@ class Location(models.Model):
         return self.name
 
 
-class Category(models.Model):
+class Category(TimeStampedPublishable):
     title = models.CharField(
         max_length=256,
-        verbose_name='Заголовок'
+        verbose_name='Заголовок',
     )
     description = models.TextField(
         verbose_name='Описание'
@@ -43,15 +60,6 @@ class Category(models.Model):
             'цифры, дефис и подчёркивание.'
         )
     )
-    is_published = models.BooleanField(
-        default=True,
-        verbose_name='Опубликовано',
-        help_text='Снимите галочку, чтобы скрыть публикацию.'
-    )
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Добавлено'
-    )
 
     class Meta:
         verbose_name = 'категория'
@@ -61,10 +69,12 @@ class Category(models.Model):
         return self.title
 
 
-class Post(models.Model):
+class Post(TimeStampedPublishable):
+    objects = PublishedManager()
+
     title = models.CharField(
         max_length=256,
-        verbose_name='Заголовок'
+        verbose_name='Заголовок',
     )
     text = models.TextField(
         verbose_name='Текст'
@@ -93,15 +103,6 @@ class Post(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         verbose_name='Категория'
-    )
-    is_published = models.BooleanField(
-        default=True,
-        verbose_name='Опубликовано',
-        help_text='Снимите галочку, чтобы скрыть публикацию.'
-    )
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Добавлено'
     )
 
     class Meta:
